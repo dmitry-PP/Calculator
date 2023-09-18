@@ -1,23 +1,31 @@
-﻿
-
-using System;
-
+﻿using System;
+using System.Collections.Generic;
 namespace ConsoleApp1
 {
     internal class Program
     {
-        static void Main(string[] args) { 
-
-            (int,int) Read2Numbers(string msg1= "Введите первое число", string msg2= "Введите второе число")
+        static void Main(string[] args)
+        {
+            int factorial(double num)
             {
-                Console.WriteLine(msg1);
-                int num1 = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine(msg2);
-                int num2 = Convert.ToInt32(Console.ReadLine());
-                return (num1,num2);
-
+                int res = 1;
+                for (int start = 1; start <= num; ++start)
+                {
+                    res *= start;
+                }
+                return res;
             }
-
+            var operations = new Dictionary<string, Action<List<double>>>()
+            {
+                ["1"] = (lst2) => Console.WriteLine($"{lst2[0]} + {lst2[1]} = {lst2[0] + lst2[1]}"),
+                ["2"]= (lst2) => Console.WriteLine($"{lst2[0]} - {lst2[1]} = {lst2[0] - lst2[1]}"),
+                ["3"] = (lst2) => Console.WriteLine($"{lst2[0]} * {lst2[1]} = {lst2[0] * lst2[1]}"),
+                ["4"] = (lst2) => Console.WriteLine($"{lst2[0]} / {lst2[1]} = {lst2[0] / lst2[1]}"),
+                ["5"] = (lst2) => Console.WriteLine($"{lst2[0]} ^ {lst2[1]} = {Math.Pow(lst2[0], lst2[1])}"),
+                ["6"] = (lst1) => Console.WriteLine($"Корень числа {lst1[0]} = {Math.Sqrt(lst1[0])}"),
+                ["7"] = (lst1) => Console.WriteLine($"1 процент от числа {lst1[0]} = {lst1[0] * 0.01}"),
+                ["8"]= (lst1) => Console.WriteLine($"Факториал числа {lst1[0]} = {factorial(lst1[0])}")
+            };
             void getMenu()
             {
                 Console.WriteLine();
@@ -34,97 +42,44 @@ namespace ConsoleApp1
                 Console.WriteLine("________________________");
                 Console.WriteLine();
             }
-
-            int factorial(int num)
-            {
-                int res = 1;
-                for(int start = 1;start<=num;++start)
-                {
-                    res *= start;
-                }
-                return res;
-            }
-
-
-
-            int asked;
+            string asked;
             do
             {
                 getMenu();
-
-                asked = Convert.ToInt32(Console.ReadLine());
-                switch (asked)
+                asked = Console.ReadLine();
+                try
+                {
+                    switch (asked)
                     {
-                        case 1:
-                        {
-                            (int, int) numbers = Read2Numbers();
-
-                            int num1 = numbers.Item1, num2 = numbers.Item2;
-
-                            Console.WriteLine($"{num1} + {num2} = {num1 + num2}");
-                            break;
-                        }
-
-                        case 2:
-                        {
-                            (int, int) numbers = Read2Numbers();
-
-                            int num1 = numbers.Item1, num2 = numbers.Item2;
-
-                            Console.WriteLine($"{num1} - {num2} = {num1 - num2}");
-                            break;
-                        }
-                    case 3:
-                        {
-                            (int, int) numbers = Read2Numbers();
-                            int num1 = numbers.Item1,num2 = numbers.Item2;
-
-                            Console.WriteLine($"{num1} * {num2} = {num1 * num2}");
-                            break;
-                        }
-                        case 4:
-                        {
-                            (int, int) numbers = Read2Numbers();
-                            int num1 = numbers.Item1, num2 = numbers.Item2;
-
-                            Console.WriteLine($"{num1} / {num2} = {num1 / num2}");
-                            break;
-                        }
-                    case 5:
-                        {
-
-                            (int, int) numbers = Read2Numbers("Введите число", "Введите N");
-                            int num1 = numbers.Item1, num2 = numbers.Item2;
-
-                            Console.WriteLine($"{num1} ^ {num2} = {Math.Pow(num1,num2)}");
-                            break;
-                        }
-                    case 6:
-                        {
-                            Console.WriteLine("Введите число");
-                            int number = Convert.ToInt32(Console.ReadLine());
-                            Console.WriteLine($"Корень числа {number} = {Math.Sqrt(number)}");
-                            break;
-                        }
-                    case 7:
-                        {
-                            Console.WriteLine("Введите число");
-                            int number = Convert.ToInt32(Console.ReadLine());
-                            Console.WriteLine($"1 процент от числа {number} = {number*0.01}");
-                            break;
-                        }
-                    case 8:
-                        {
-                            Console.WriteLine("Введите число");
-                            int number = Convert.ToInt32(Console.ReadLine());
-                            Console.WriteLine($"Факториал числа {number} = {factorial(number)}");
-                            break;
-                        }
-
+                        case "1":
+                        case "2":
+                        case "3":
+                        case "4":
+                        case "5":
+                            {
+                                List<double> lst = new List<double>();
+                                Console.WriteLine("Введите первое число: ");
+                                lst.Add(Convert.ToDouble(Console.ReadLine().Replace(".", ",")));
+                                Console.WriteLine("Введите второе число: ");
+                                lst.Add(Convert.ToDouble(Console.ReadLine().Replace(".", ",")));
+                                operations[asked](lst);
+                                break;
+                            }
+                        case "6":
+                        case "7":
+                        case "8":
+                            {
+                                Console.WriteLine("Введите число: ");
+                                operations[asked](new List<double> { Convert.ToDouble(Console.ReadLine().Replace(".", ",")) });
+                                break;
+                            }
+                    }
+                }
+                catch { 
+                    Console.WriteLine("Было введено не число. Выход"); 
                 }
             }
-
-            while (asked != 9);
+            while (asked != "9");
         }
     }
 }
